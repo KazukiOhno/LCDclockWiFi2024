@@ -2,7 +2,7 @@
  * File:   Draw.c
  * Author: K.Ohno
  *
- * 描画関係ルーチン
+ * �`��֌W���[�`��
  */
 
 #include "debug.h"
@@ -15,7 +15,7 @@
 //#include "font.h"
 
 
-// 絶対値を取得する関数マクロ定義
+// ��Βl���擾����֐��}�N����`
 #define ABS(x) ((x) < 0 ? -(x) : (x))
 
 
@@ -23,42 +23,42 @@ const char WeekDays[][4] = {
     "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
 };
 
-//時刻表示は、変化のあった所だけにするようにする→アナログ時計のみで使用
-uint8_t preTime[3]; //時刻を保持しておき、変化をチェックできるようにする
+//�����\���́A�ω��̂������������ɂ���悤�ɂ��遨�A�i���O���v�݂̂Ŏg�p
+uint8_t preTime[3]; //������ێ����Ă����A�ω����`�F�b�N�ł���悤�ɂ���
 
 int16_t CalendarXsize, CalendarYsize;
 
-//int16_t CustomXsize; //カスタマイズの時、領域を指定するために使う　カレンダーのみに使用
-//int16_t CustomYsize; //デジタルの時刻表示にも使用
+//int16_t CustomXsize; //�J�X�^�}�C�Y�̎��A�̈���w�肷�邽�߂Ɏg���@�J�����_�[�݂̂Ɏg�p
+//int16_t CustomYsize; //�f�W�^���̎����\���ɂ��g�p
 
-char Smaller[2] = "";  //時刻表示で、bmpフォント指定時、小さいフォントを指定: "s"、それ以外の時、""
+char Smaller[2] = "";  //�����\���ŁAbmp�t�H���g�w�莞�A�������t�H���g���w��: "s"�A����ȊO�̎��A""
 
 
 
 /*
- * 16bit RGB=565カラーのbmpファイルを読み込み表示する
+ * 16bit RGB=565�J���[��bmp�t�@�C����ǂݍ��ݕ\������
  * 
- * 0x0000　(2)	bfType		ファイルタイプ　通常は'BM'
- * 0x0002　(4)	bfSize		ファイルサイズ (byte)
- * 0x0006　(2)	bfReserved1	予約領域　常に 0
- * 0x0008　(2)	bfReserved2	予約領域　常に 0
- * 0x000A　(4)	bfOffBits	ファイル先頭から画像データまでのオフセット (byte)
- * 0x000E　(4)	bcSize		ヘッダサイズ
- * 0x0012　(4)	bcWidth		画像の幅 (ピクセル)
- * 0x0016　(4)	bcHeight	画像の高さ (ピクセル) 正数なら，画像データは下から上へ
- *                                               負数なら，画像データは上から下へ
- * 0x001A　(2)	bcPlanes	プレーン数　常に 1
- * 0x001C　(2)	bcBitCount	1画素あたりのデータサイズ (bit)
+ * 0x0000�@(2)	bfType		�t�@�C���^�C�v�@�ʏ��'BM'
+ * 0x0002�@(4)	bfSize		�t�@�C���T�C�Y (byte)
+ * 0x0006�@(2)	bfReserved1	�\��̈�@��� 0
+ * 0x0008�@(2)	bfReserved2	�\��̈�@��� 0
+ * 0x000A�@(4)	bfOffBits	�t�@�C���擪����摜�f�[�^�܂ł̃I�t�Z�b�g (byte)
+ * 0x000E�@(4)	bcSize		�w�b�_�T�C�Y
+ * 0x0012�@(4)	bcWidth		�摜�̕� (�s�N�Z��)
+ * 0x0016�@(4)	bcHeight	�摜�̍��� (�s�N�Z��) �����Ȃ�C�摜�f�[�^�͉�������
+ *                                               �����Ȃ�C�摜�f�[�^�͏ォ�牺��
+ * 0x001A�@(2)	bcPlanes	�v���[�����@��� 1
+ * 0x001C�@(2)	bcBitCount	1��f������̃f�[�^�T�C�Y (bit)
  * 
- * ここでは、16bitカラーと決め打ちしている
+ * �����ł́A16bit�J���[�ƌ��ߑł����Ă���
  * 
- * エラーが発生した時は、FR_OK = 0以外を返す
+ * �G���[�������������́AFR_OK = 0�ȊO��Ԃ�
  */
-//BMPヘッダ
-#define bfOffBits   0x0a        //ファイル先頭から画像データまでのオフセット (byte)
-#define bcWidth     0x12        //ピクセル幅 (サイズ4byte)
-#define bcHeight    0x16        //ピクセル高さ (サイズ4byte)
-#define bcBitCount  0x1C        //1画素あたりのデータサイズ (bit)
+//BMP�w�b�_
+#define bfOffBits   0x0a        //�t�@�C���擪����摜�f�[�^�܂ł̃I�t�Z�b�g (byte)
+#define bcWidth     0x12        //�s�N�Z���� (�T�C�Y4byte)
+#define bcHeight    0x16        //�s�N�Z������ (�T�C�Y4byte)
+#define bcBitCount  0x1C        //1��f������̃f�[�^�T�C�Y (bit)
 #define BUFFERSIZE  80
 FRESULT ReadBmp16(char *bmpfile) {
     uint8_t buffer[BUFFERSIZE];
@@ -71,24 +71,24 @@ FRESULT ReadBmp16(char *bmpfile) {
     
     remount();
     f_chdir("/");
-    //ファイル名は8文字までサポート
+    //�t�@�C������8�����܂ŃT�|�[�g
     res = f_open(&FileObject, bmpfile, FA_READ);
     if (res != FR_OK) return res;
     
-    //ヘッダ読込
-    res = f_read(&FileObject, buffer, 32, &actualLength); //32バイト分読み込む
+    //�w�b�_�Ǎ�
+    res = f_read(&FileObject, buffer, 32, &actualLength); //32�o�C�g���ǂݍ���
     if (res != FR_OK) return res;
     if (buffer[bcBitCount] == 16) {
-        //16bitカラーのデータの時のみ処理
+        //16bit�J���[�̃f�[�^�̎��̂ݏ���
         x = buffer[bcWidth] + (buffer[bcWidth+1]<<8);   //Width
         y = buffer[bcHeight];                           //Height
-        //シークして、データの先頭まで移動
+        //�V�[�N���āA�f�[�^�̐擪�܂ňړ�
         f_lseek(&FileObject, buffer[bfOffBits]);
         
-        //bmpデータは、表示される下の行から始まる
+        //bmp�f�[�^�́A�\������鉺�̍s����n�܂�
         for (kk = 0; kk < y; kk++) {
-            //BUFFERSIZEを考慮したプログラム
-            num = (uint16_t)x * 2;  //1行のバイト数=xドット x 16bit(2バイト)
+            //BUFFERSIZE���l�������v���O����
+            num = (uint16_t)x * 2;  //1�s�̃o�C�g��=x�h�b�g x 16bit(2�o�C�g)
             xx = 0;
             while (num > 0) {
                 if (num >= sizeof(buffer)) nn = sizeof(buffer);
@@ -109,16 +109,16 @@ FRESULT ReadBmp16(char *bmpfile) {
 
 
 /*
- * モノクロbmpを読み込み描画
- * X,Yピッチは、bmpのX,Yサイズ、　拡大サポートが必要かはあとで考える
- * 引数: 描画位置、色指定
+ * ���m�N��bmp��ǂݍ��ݕ`��
+ * X,Y�s�b�`�́Abmp��X,Y�T�C�Y�A�@�g��T�|�[�g���K�v���͂��Ƃōl����
+ * ����: �`��ʒu�A�F�w��
  * 
- * フォントのXサイズ: 最大256ドット
- * ch = "FontDir/5.bmp"　のように指定
+ * �t�H���g��X�T�C�Y: �ő�256�h�b�g
+ * ch = "FontDir/5.bmp"�@�̂悤�Ɏw��
  * 
  */
 //void DrawBmp(char *ch) {
-//    uint8_t buffer[32];     //32*8=256ドット分
+//    uint8_t buffer[32];     //32*8=256�h�b�g��
 //    int16_t fontXsize, fontYsize;
 //    uint16_t len;
 //    int16_t ii, jj;
@@ -126,58 +126,58 @@ FRESULT ReadBmp16(char *bmpfile) {
 //    FRESULT res;
 //    uint16_t num;
 //    uint16_t pos;
-//    int16_t xp, yp; //座標
+//    int16_t xp, yp; //���W
 //    uint8_t line;
 //    FIL FileObject;
 //    
-//    //ファイル名は8文字までサポート
+//    //�t�@�C������8�����܂ŃT�|�[�g
 //    do {
 //        res = f_open(&FileObject, ch, FA_READ);
 //        if (res != FR_OK) remount();
 //    } while (res != FR_OK);
 //    
-//    //ヘッダ読込
-//    f_read(&FileObject, buffer, 32, &actualLength); //32バイト分読み込む
+//    //�w�b�_�Ǎ�
+//    f_read(&FileObject, buffer, 32, &actualLength); //32�o�C�g���ǂݍ���
 //    if (buffer[bcBitCount] == 1) {
-//        //モノクロデータの時のみ処理
+//        //���m�N���f�[�^�̎��̂ݏ���
 //        fontXsize = buffer[bcWidth] + (buffer[bcWidth+1]<<8);   //Width
 //        fontYsize = buffer[bcHeight];                           //Height
-//        //シークして、データの先頭まで移動
+//        //�V�[�N���āA�f�[�^�̐擪�܂ňړ�
 //        f_lseek(&FileObject, buffer[bfOffBits]);
 //        
-//        //一度に読み込むデータサイズ(バイト数)
-//        len = (uint16_t)((fontXsize + 31)/32) *4;        //1ドット行分のバイト数、4バイト単位
-//        //例：fontXsize=40ドットの時、データは5バイト、3バイトpaddingして、8バイト/行
-//        //    　　      41ドットの時、データは6バイト、2バイトpadding
+//        //��x�ɓǂݍ��ރf�[�^�T�C�Y(�o�C�g��)
+//        len = (uint16_t)((fontXsize + 31)/32) *4;        //1�h�b�g�s���̃o�C�g���A4�o�C�g�P��
+//        //��FfontXsize=40�h�b�g�̎��A�f�[�^��5�o�C�g�A3�o�C�gpadding���āA8�o�C�g/�s
+//        //    �@�@      41�h�b�g�̎��A�f�[�^��6�o�C�g�A2�o�C�gpadding
 //
-//        //1ドット行ずつ読み出す前提
+//        //1�h�b�g�s���ǂݏo���O��
 //        
-//        //bmpのデータは、下から並んでいるで、表示させるのは下からというのに注意
-//        //画面をはみ出しても正常に描画できるように処理追加
-//        //画面内に入るように調整。描画する時に、はみ出していないかチェック要
+//        //bmp�̃f�[�^�́A���������ł���ŁA�\��������͉̂�����Ƃ����̂ɒ���
+//        //��ʂ��͂ݏo���Ă�����ɕ`��ł���悤�ɏ����ǉ�
+//        //��ʓ��ɓ���悤�ɒ����B�`�悷�鎞�ɁA�͂ݏo���Ă��Ȃ����`�F�b�N�v
 //        for (jj = 0; jj < fontYsize; jj++) {
 //            yp = Cursor_y + (fontYsize - jj - 1);   //
 //
 //            f_read(&FileObject, buffer, len, &actualLength);
 //            
 //            pos = 0;
-//            //addsetして、毎回x,y座標指定しない方が高速描画
+//            //addset���āA����x,y���W�w�肵�Ȃ����������`��
 //            addset(Cursor_x, yp, Cursor_x + fontXsize -1, yp + 1);
 //            for (ii = 0; ii < fontXsize; ii++) {
-//                if ((ii % 8) == 0) line = buffer[pos++]; //8ドット分のデータを取り込む
+//                if ((ii % 8) == 0) line = buffer[pos++]; //8�h�b�g���̃f�[�^����荞��
 //                xp = Cursor_x + ii;
 //                if (line & 0x80) {
-//                    // 1=背景の描画
+//                    // 1=�w�i�̕`��
 //                    if (TextbgColor != TextColor) {
-//                        // Backカラーがfrontカラーと違う時は、その色を背景として塗る
+//                        // Back�J���[��front�J���[�ƈႤ���́A���̐F��w�i�Ƃ��ēh��
 //                        draw_pixel(TextbgColor);
-//                        //背景色を塗らない場合、アドレスが進まない問題がある
+//                        //�w�i�F��h��Ȃ��ꍇ�A�A�h���X���i�܂Ȃ���肪����
 //                    } else {
-//                        //描画しないアドレスを飛ばして再設定
+//                        //�`�悵�Ȃ��A�h���X���΂��čĐݒ�
 //                        addset(xp+1, yp, Cursor_x + fontXsize -1, yp + 1);
 //                    }
 //                } else {
-//                    // 0=黒の描画　前景
+//                    // 0=���̕`��@�O�i
 //                    draw_pixel(TextColor);
 //                }
 //                line <<= 1;
@@ -197,47 +197,47 @@ FRESULT ReadBmp16(char *bmpfile) {
 
 
 /*
- * フォントファイルあるかを0.bmpの有無で判断
- * ファイルあれば、ヘッダ情報を読み取り、グローバル変数のSDcardBufferに格納
- *  0.bmpデータがあることが前提。ない時は、カスタムフォントないと判断し、FontNormalで描画
+ * �t�H���g�t�@�C�����邩��0.bmp�̗L���Ŕ��f
+ * �t�@�C������΁A�w�b�_����ǂݎ��A�O���[�o���ϐ���SDcardBuffer�Ɋi�[
+ *  0.bmp�f�[�^�����邱�Ƃ��O��B�Ȃ����́A�J�X�^���t�H���g�Ȃ��Ɣ��f���AFontNormal�ŕ`��
  */
 uint8_t checkFontFile(char *fontFolder) {
     char filename[30];
     FRESULT res;
     UINT actualLength;
     uint8_t xr, yr;
-    FIL file;       //Openingやデータ書き込み用
+    FIL file;       //Opening��f�[�^�������ݗp
     
-    //0.bmpがある前提で、その大きさを取得する
+    //0.bmp������O��ŁA���̑傫�����擾����
     sprintf(filename, "/%s/0.bmp", fontFolder);
     if (f_open(&file, filename, FA_READ) != FR_OK) {
-        return 1;        //エラーの時
+        return 1;        //�G���[�̎�
     }
-    //ファイルある時は、ヘッダ情報読み取る
-    res = f_read(&file, SDcardBuffer, 32, &actualLength); //32バイト分読み込む
+    //�t�@�C�����鎞�́A�w�b�_���ǂݎ��
+    res = f_read(&file, SDcardBuffer, 32, &actualLength); //32�o�C�g���ǂݍ���
     f_close(&file);
 
-    CurrentFont.xsize = SDcardBuffer[bcWidth];     //255ドット1以内と想定
-    CurrentFont.ysize = SDcardBuffer[bcHeight];    //255ドット1以内と想定
-    CurrentFont.xpitch = CurrentFont.xsize;     //X方向はプロポーショナルなのでその都度
+    CurrentFont.xsize = SDcardBuffer[bcWidth];     //255�h�b�g1�ȓ��Ƒz��
+    CurrentFont.ysize = SDcardBuffer[bcHeight];    //255�h�b�g1�ȓ��Ƒz��
+    CurrentFont.xpitch = CurrentFont.xsize;     //X�����̓v���|�[�V���i���Ȃ̂ł��̓s�x
     CurrentFont.ypitch = CurrentFont.ysize;
     
-    return 0;   //ファイルあった時、正常終了
+    return 0;   //�t�@�C�����������A����I��
 }
 
 
 /*
- * FontCodeで定義されているフォントコードを指定
- * カスタムフォントの場合は、そこからさらにフォントファイルをたどる必要がある
+ * FontCode�Œ�`����Ă���t�H���g�R�[�h���w��
+ * �J�X�^���t�H���g�̏ꍇ�́A�������炳��Ƀt�H���g�t�@�C�������ǂ�K�v������
  * 
- * これとSetKanjiFontは、併用する。
- * 漢字交じり表示を行う時は、内蔵フォントとの倍率を計算する都合上、SetKanjiFontを最後に実施
- * カスタムフォント使用時は、漢字を使わないことを前提
- * 　　カスタムフォントは、一部文字しか定義されていないことを前提に、FontNormalで補完させる
+ * �����SetKanjiFont�́A���p����B
+ * ����������\�����s�����́A�����t�H���g�Ƃ̔{�����v�Z����s����ASetKanjiFont���Ō�Ɏ��{
+ * �J�X�^���t�H���g�g�p���́A�������g��Ȃ����Ƃ�O��
+ * �@�@�J�X�^���t�H���g�́A�ꕔ����������`����Ă��Ȃ����Ƃ�O��ɁAFontNormal�ŕ⊮������
  */
 uint8_t SetFont(uint8_t fontcode, char *fontname) {
    
-    //fontcode==0の時のエラー処理を追加→NormalFontとするのが良いかも
+    //fontcode==0�̎��̃G���[������ǉ���NormalFont�Ƃ���̂��ǂ�����
     
     CurrentFont.fontcode = fontcode;
     CurrentFont.MagX = 1;
@@ -246,42 +246,42 @@ uint8_t SetFont(uint8_t fontcode, char *fontname) {
     CurrentFont.YpitchAdj = 0;
 
     if (fontcode >= EXTFONTCODE) {
-        //その他のカスタムフォントの場合
-        CurrentFont.data = NULL;    //内蔵フォントでないことを示す
+        //���̑��̃J�X�^���t�H���g�̏ꍇ
+        CurrentFont.data = NULL;    //�����t�H���g�łȂ����Ƃ�����
         CurrentFont.fontName = fontname;
-        //フォントファイルのチェック及び、size, pitch, mag情報取得
+        //�t�H���g�t�@�C���̃`�F�b�N�y�сAsize, pitch, mag���擾
         if (checkFontFile(fontname) == 0) return 0;
 
-        //フォントファイルがない時などは、ノーマルフォントに戻して、設定継続
+        //�t�H���g�t�@�C�����Ȃ����Ȃǂ́A�m�[�}���t�H���g�ɖ߂��āA�ݒ�p��
         CurrentFont.fontcode = FontNormal;        
     }
-    //カスタムフォントがエラーがあった時は、以下の処理を実施
+    //�J�X�^���t�H���g���G���[�����������́A�ȉ��̏��������{
     
-    //内蔵フォントの場合
+    //�����t�H���g�̏ꍇ
     CurrentFont.data = InternalFontList[fontcode];
     CurrentFont.xsize = CurrentFont.data[Fxsize];
     CurrentFont.ysize = CurrentFont.data[Fysize];
     CurrentFont.xpitch = CurrentFont.data[Fxpitch];
     CurrentFont.ypitch = CurrentFont.data[Fypitch];
-//        CurrentFont.kratio = 1;    //倍率は、カスタムフォント設定時に変更される        
+//        CurrentFont.kratio = 1;    //�{���́A�J�X�^���t�H���g�ݒ莞�ɕύX�����        
 
         return 0;
 }
 
 
 /*
- * フォントを決めたときに、ヘッダ情報から、基本情報を取得
- * オフセットデータも取得しておく
- * ファイルはオープンのままにする FileFontを介してアクセス可能
+ * �t�H���g�����߂��Ƃ��ɁA�w�b�_��񂩂�A��{�����擾
+ * �I�t�Z�b�g�f�[�^���擾���Ă���
+ * �t�@�C���̓I�[�v���̂܂܂ɂ��� FileFont����ăA�N�Z�X�\
  * 
- * fontname: 0:漢字ファイルcloseさせる
- *    Misaki 1    //8x8ドットフォント
- *    SJIS16 2    //16x16ドットフォント
- *    SJIS24 3    //24x24ドットフォント
+ * fontname: 0:�����t�@�C��close������
+ *    Misaki 1    //8x8�h�b�g�t�H���g
+ *    SJIS16 2    //16x16�h�b�g�t�H���g
+ *    SJIS24 3    //24x24�h�b�g�t�H���g
  * 
- * CurrentKanjiFont.fontcodeで、漢字の有効無効を判断に使う
+ * CurrentKanjiFont.fontcode�ŁA�����̗L�������𔻒f�Ɏg��
  */
-uint8_t KanjiOffsetTable[256];  //ファイル内の漢字データのありかを示すテーブル
+uint8_t KanjiOffsetTable[256];  //�t�@�C�����̊����f�[�^�̂��肩�������e�[�u��
 
 //void SetKanjiFont(uint8_t fontcode) {
 //    char header[64];
@@ -289,33 +289,33 @@ uint8_t KanjiOffsetTable[256];  //ファイル内の漢字データのありか�
 //    UINT actualLength;
 //    uint8_t xr, yr;
 //
-//    //既に同じフォントのファイルオープンしていたら何もしない
+//    //���ɓ����t�H���g�̃t�@�C���I�[�v�����Ă����牽�����Ȃ�
 //    if (CurrentKanjiFont.fontcode == fontcode) return;
 //    
 //    if (CurrentKanjiFont.fontcode != 0) {
-//        //既にファイルを開いていたら、一旦閉じる
+//        //���Ƀt�@�C�����J���Ă�����A��U����
 //        f_close(&FileFont);
-//        CurrentKanjiFont.fontcode = 0;  //一旦、漢字を無効化状態にする
+//        CurrentKanjiFont.fontcode = 0;  //��U�A�����𖳌�����Ԃɂ���
 //        CurrentKanjiFont.kratio = 0x11;
 //        if (fontcode == 0) {
-//            // fontcodeが0の時は、ファイル閉じて終了
+//            // fontcode��0�̎��́A�t�@�C�����ďI��
 //            return;
 //        }
 //    }
 //
-//    //SDカードなければ=エラーなら、何もしない
-//    // ファイルを開き、データを読み出す
-//    //ファイル名は8文字までサポート
+//    //SD�J�[�h�Ȃ����=�G���[�Ȃ�A�������Ȃ�
+//    // �t�@�C�����J���A�f�[�^��ǂݏo��
+//    //�t�@�C������8�����܂ŃT�|�[�g
 //    if (f_open(&FileFont, KanjiFontFile[fontcode], FA_READ ) == FR_OK) {
-//        //Openし、ヘッダ読込
-//        f_read(&FileFont, header, 64, &actualLength); //64バイト分読み込む
-//        headerSize = header[2] + (uint16_t)header[3]*256; //ヘッダのサイズ=64
-//        CurrentKanjiFont.xsize = header[0x10]; //フォントのX方向の大きさ。ドット数
-//        CurrentKanjiFont.ysize = header[0x11]; //フォントのY方向の大きさ。ドット数
-//        CurrentKanjiFont.xpitch = CurrentKanjiFont.xsize;   //ピッチは、フォントサイズと同じにしておく
+//        //Open���A�w�b�_�Ǎ�
+//        f_read(&FileFont, header, 64, &actualLength); //64�o�C�g���ǂݍ���
+//        headerSize = header[2] + (uint16_t)header[3]*256; //�w�b�_�̃T�C�Y=64
+//        CurrentKanjiFont.xsize = header[0x10]; //�t�H���g��X�����̑傫���B�h�b�g��
+//        CurrentKanjiFont.ysize = header[0x11]; //�t�H���g��Y�����̑傫���B�h�b�g��
+//        CurrentKanjiFont.xpitch = CurrentKanjiFont.xsize;   //�s�b�`�́A�t�H���g�T�C�Y�Ɠ����ɂ��Ă���
 //        CurrentKanjiFont.ypitch = CurrentKanjiFont.ysize;
-//        //高さを基準にノーマルフォントの倍率設定 .kratioはこのフォントの倍率ではないことに注意
-//        //8x8の時x11、16x16の時x12、24x24の時x23という感じが良いかも
+//        //��������Ƀm�[�}���t�H���g�̔{���ݒ� .kratio�͂��̃t�H���g�̔{���ł͂Ȃ����Ƃɒ���
+//        //8x8�̎�x11�A16x16�̎�x12�A24x24�̎�x23�Ƃ����������ǂ�����
 //        xr = (CurrentKanjiFont.xsize/2 + CurrentFont.xsize/2) / CurrentFont.xsize;
 //        if (xr < 1) xr = 1;
 //        yr = CurrentKanjiFont.ysize / CurrentFont.ysize;
@@ -324,31 +324,31 @@ uint8_t KanjiOffsetTable[256];  //ファイル内の漢字データのありか�
 //        
 //        CurrentKanjiFont.data = (uint8_t *)KanjiFontFile[fontcode];
 //        CurrentKanjiFont.fontcode = fontcode;
-//        f_read(&FileFont, KanjiOffsetTable, 256, &actualLength); //256バイト分のテーブル読み込む
-//        //このデータをもとに表示文字のデータの位置をすばやく計算させるため、保持しておく
+//        f_read(&FileFont, KanjiOffsetTable, 256, &actualLength); //256�o�C�g���̃e�[�u���ǂݍ���
+//        //���̃f�[�^�����Ƃɕ\�������̃f�[�^�̈ʒu�����΂₭�v�Z�����邽�߁A�ێ����Ă���
 //    }
 //}
 
 
 /*
- * カスタムフォント(bmp形式のデータ)の描画
- * 0x16-0x3Aまでの文字コードに対応することを想定
- * 0x16: 日, 月, 火, 水, 木, 金, 土, ℃, 'F, ■
- * 0x20-0x3Aまでは、通常のASCII
- * ただし、bmpファイル名にASCII1文字を割り振れない文字もあるのでここで定義した名称にする必要あり
- * サポートするデータは、モノクロbmpデータのみとする
+ * �J�X�^���t�H���g(bmp�`���̃f�[�^)�̕`��
+ * 0x16-0x3A�܂ł̕����R�[�h�ɑΉ����邱�Ƃ�z��
+ * 0x16: ��, ��, ��, ��, ��, ��, �y, ��, 'F, ��
+ * 0x20-0x3A�܂ł́A�ʏ��ASCII
+ * �������Abmp�t�@�C������ASCII1����������U��Ȃ�����������̂ł����Œ�`�������̂ɂ���K�v����
+ * �T�|�[�g����f�[�^�́A���m�N��bmp�f�[�^�݂̂Ƃ���
  * 
- * 対応する文字は、表示に必要なものに限定して、作成労力を節約してよい。
- * bmpファイルない時は、FontNormalで表示
- * 日付: 0-9 / () 曜日
- * 時刻: 0-9 :    小文字
- * 温度: 0-9 . ℃
- * 湿度: 0-9 %
- * カレンダー: 0-9 曜日
+ * �Ή����镶���́A�\���ɕK�v�Ȃ��̂Ɍ��肵�āA�쐬�J�͂�ߖ񂵂Ă悢�B
+ * bmp�t�@�C���Ȃ����́AFontNormal�ŕ\��
+ * ���t: 0-9 / () �j��
+ * ����: 0-9 :    ������
+ * ���x: 0-9 . ��
+ * ���x: 0-9 %
+ * �J�����_�[: 0-9 �j��
  * 
- * 小文字指定: Smallerを使う　時刻表示において秒だけ小さい文字にするときに利用
+ * �������w��: Smaller���g���@�����\���ɂ����ĕb���������������ɂ���Ƃ��ɗ��p
  * 
- * エラーの時、1
+ * �G���[�̎��A1
  * 
  */
 uint8_t displayCustom_putc(uint8_t c) {
@@ -365,10 +365,10 @@ uint8_t displayCustom_putc(uint8_t c) {
     FRESULT res;
     uint8_t prev_size;
     uint8_t prevfontcode, prevmag;
-    int16_t xp, yp; //座標
-    int16_t px, py; //倍率を取り込んだpitch
+    int16_t xp, yp; //���W
+    int16_t px, py; //�{������荞��pitch
 
-    //ASCII並びに。　FSunday=0x16から開始
+    //ASCII���тɁB�@FSunday=0x16����J�n
     const char *charname2[] = {
         "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",  "degC", "degF", "", 
         "space", "", "", "", "", "percent", "", "", 
@@ -376,51 +376,51 @@ uint8_t displayCustom_putc(uint8_t c) {
         "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "colon", "alarm", "Gear", "Bell",
     };
     
-    //対象外の文字は排除
+    //�ΏۊO�̕����͔r��
 //    if ((c != Fgear) && (c != Fbell) && (c < FSunday || c > ':')) {
 //        return 0;
 //    }
 
-    // フォントデータのファイルを開いて、データを読み出す
-    // bmpファイルは、一種のプロポーショナルフォント
-    // bmpファイルを読んで、X, Yサイズ取得後、データを取得しながら描画
+    // �t�H���g�f�[�^�̃t�@�C�����J���āA�f�[�^��ǂݏo��
+    // bmp�t�@�C���́A���̃v���|�[�V���i���t�H���g
+    // bmp�t�@�C����ǂ�ŁAX, Y�T�C�Y�擾��A�f�[�^���擾���Ȃ���`��
     
-    //フォルダ名でフォント種類を指定する
+    //�t�H���_���Ńt�H���g��ނ��w�肷��
     if ((c >= 'A') && (c <= 'Z')) sprintf(st, "%c", c);
-    else if (c == Fgear) sprintf(st, "Gear");   //ギヤの時だけ特別
-    else if (c == Fbell) sprintf(st, "Bell");   //アラームベルの時だけ特別
+    else if (c == Fgear) sprintf(st, "Gear");   //�M���̎���������
+    else if (c == Fbell) sprintf(st, "Bell");   //�A���[���x���̎���������
     else if (c >= FSunday) strcpy(st, charname2[c - FSunday]);
     else return 1;
     
     sprintf(filename, "/%s/%s%s.bmp", CurrentFont.fontName, st, Smaller);
     res = f_open(&FileFont, filename, FA_READ);
-    //3つのエラーのケースが想定される。対象の文字がない、そもそもフォントdirがない、その他のエラー
+    //3�̃G���[�̃P�[�X���z�肳���B�Ώۂ̕������Ȃ��A���������t�H���gdir���Ȃ��A���̑��̃G���[
     if (res == FR_NO_FILE) {
-        //フォルダはあっても対象の文字のファイルがない時は、終了
+        //�t�H���_�͂����Ă��Ώۂ̕����̃t�@�C�����Ȃ����́A�I��
             return 0;
     } else if (res != FR_OK) {
-        //Openできないケースがあった。どういう時に発生するのか不明。
-        //Openできずに処理させていて、表示が乱れるので、処理を追加
-        //エラーはここで発生していた事例確認
-        remount();      //再マウント
+        //Open�ł��Ȃ��P�[�X���������B�ǂ��������ɔ�������̂��s���B
+        //Open�ł����ɏ��������Ă��āA�\���������̂ŁA������ǉ�
+        //�G���[�͂����Ŕ������Ă�������m�F
+        remount();      //�ă}�E���g
         DEBUG_PRINTF("Retry Open error: %s\r\n", filename);
         do {        
             res = f_open(&FileFont, filename, FA_READ);
-        } while (res != FR_OK);   //ちゃんとopenできるまでループ
+        } while (res != FR_OK);   //������open�ł���܂Ń��[�v
 
-//        if (f_open(&FileFont, filename, FA_READ) != FR_OK) return 10;   //マウントできなかった場合
+//        if (f_open(&FileFont, filename, FA_READ) != FR_OK) return 10;   //�}�E���g�ł��Ȃ������ꍇ
     }
     
-    res = f_read(&FileFont, SDcardBuffer, 32, &actualLength); //header=32バイト分読み込む
+    res = f_read(&FileFont, SDcardBuffer, 32, &actualLength); //header=32�o�C�g���ǂݍ���
     if (res != FR_OK) {
         f_close(&FileFont);
-        return 0; //エラーにせずリターン
+        return 0; //�G���[�ɂ������^�[��
     }
-    //CurrentFontにも0.bmpの大きさが設定されているが、毎回チェックしてプロポーショナル対応
-    fontXsize = SDcardBuffer[bcWidth]; //フォントの大きさは、縦横とも255まで
+    //CurrentFont�ɂ�0.bmp�̑傫�����ݒ肳��Ă��邪�A����`�F�b�N���ăv���|�[�V���i���Ή�
+    fontXsize = SDcardBuffer[bcWidth]; //�t�H���g�̑傫���́A�c���Ƃ�255�܂�
     fontYsize = SDcardBuffer[bcHeight];
     
-    //シークして、データの先頭まで移動
+    //�V�[�N���āA�f�[�^�̐擪�܂ňړ�
     res = f_lseek(&FileFont, SDcardBuffer[bfOffBits]);
 
     if (res != FR_OK) {
@@ -428,57 +428,57 @@ uint8_t displayCustom_putc(uint8_t c) {
         return 3;
     }
 
-    len = ((fontXsize+31)/32)*4;        //1ドット行分のバイト数、4バイト単位
-    //例：fontXsize=40ドットの時、データは5バイト、3バイトpaddingして、8バイト/行
-    //    　　      41ドットの時、データは6バイト、2バイトpadding
+    len = ((fontXsize+31)/32)*4;        //1�h�b�g�s���̃o�C�g���A4�o�C�g�P��
+    //��FfontXsize=40�h�b�g�̎��A�f�[�^��5�o�C�g�A3�o�C�gpadding���āA8�o�C�g/�s
+    //    �@�@      41�h�b�g�̎��A�f�[�^��6�o�C�g�A2�o�C�gpadding
     
-    linenum = (sizeof SDcardBuffer) / len;   //バッファサイズに入るのは何ドット行分か
-    //バッファは320バイトあり、2560ドット相当あるので、linenum==0にならず、最低でも8行分は一度に読み込める
+    linenum = (sizeof SDcardBuffer) / len;   //�o�b�t�@�T�C�Y�ɓ���͉̂��h�b�g�s����
+    //�o�b�t�@��320�o�C�g����A2560�h�b�g��������̂ŁAlinenum==0�ɂȂ炸�A�Œ�ł�8�s���͈�x�ɓǂݍ��߂�
     if (linenum >= fontYsize) {
-        //バッファに入りきる場合は、ドット行数=Yドットサイズ
+        //�o�b�t�@�ɓ��肫��ꍇ�́A�h�b�g�s��=Y�h�b�g�T�C�Y
         linenum = fontYsize;
     }
-    datasize = len * linenum;   //一度に読み込むデータサイズ(バイト数)
+    datasize = len * linenum;   //��x�ɓǂݍ��ރf�[�^�T�C�Y(�o�C�g��)
     
-    //bmpのデータは、下から並んでいるで、表示させるのは下からというのに注意
-    //画面をはみ出しても正常に描画できるように処理追加
-    //画面内に入るように調整。描画する時に、はみ出していないかチェック要
+    //bmp�̃f�[�^�́A���������ł���ŁA�\��������͉̂�����Ƃ����̂ɒ���
+    //��ʂ��͂ݏo���Ă�����ɕ`��ł���悤�ɏ����ǉ�
+    //��ʓ��ɓ���悤�ɒ����B�`�悷�鎞�ɁA�͂ݏo���Ă��Ȃ����`�F�b�N�v
     
-    //下から描画させたい。バッファに入りきらないbmpも対応
-    remainingLine = 0;   //読み込む残り行数
+    //������`�悳�������B�o�b�t�@�ɓ��肫��Ȃ�bmp���Ή�
+    remainingLine = 0;   //�ǂݍ��ގc��s��
     for (jj = 0; jj < fontYsize; jj++) {
         yp = Cursor_y + (fontYsize - jj - 1) * CurrentFont.MagY;
         if (remainingLine == 0) {
-            //読み込んだデータを使い切ったら、次のデータを読み込む
-            res = f_read(&FileFont, SDcardBuffer, datasize, &actualLength);    //データを読み込む
+            //�ǂݍ��񂾃f�[�^���g���؂�����A���̃f�[�^��ǂݍ���
+            res = f_read(&FileFont, SDcardBuffer, datasize, &actualLength);    //�f�[�^��ǂݍ���
             if (res != FR_OK) {
                 f_close(&FileFont);
                 return 44;
             }
-            remainingLine = actualLength / len;    //読み込んだデータの行数
+            remainingLine = actualLength / len;    //�ǂݍ��񂾃f�[�^�̍s��
             pos = 0;
         }
-        //addsetして、毎回x,y座標指定しない方が高速描画
+        //addset���āA����x,y���W�w�肵�Ȃ����������`��
         addset(Cursor_x, yp, Cursor_x + fontXsize * CurrentFont.MagX -1, yp + CurrentFont.MagY);
         for (ii = 0; ii < fontXsize; ii++) {
-            if ((ii % 8) == 0) line = SDcardBuffer[pos++]; //8ドット毎にデータを取り込む
+            if ((ii % 8) == 0) line = SDcardBuffer[pos++]; //8�h�b�g���Ƀf�[�^����荞��
             xp = Cursor_x + ii * CurrentFont.MagX;
             if (line & 0x80) {
-                // 1の描画 背景
+                // 1�̕`�� �w�i
                 if (TextbgColor != TextColor) {
-                    // Backカラーがfrontカラーと違う時は、その色を背景として塗る
+                    // Back�J���[��front�J���[�ƈႤ���́A���̐F��w�i�Ƃ��ēh��
                     if (CurrentFont.MagX * CurrentFont.MagY == 1)
                         draw_pixel(TextbgColor);
                     else
                         display_fillRect(xp, yp, CurrentFont.MagX, CurrentFont.MagY, TextbgColor);
-                    //背景色を塗らない場合、アドレスが進まない問題がある
+                    //�w�i�F��h��Ȃ��ꍇ�A�A�h���X���i�܂Ȃ���肪����
                 } else {
-                    //描画しないアドレスを飛ばして再設定
+                    //�`�悵�Ȃ��A�h���X���΂��čĐݒ�
                     addset(xp+CurrentFont.MagX, yp, Cursor_x + fontXsize * CurrentFont.MagX -1, yp + CurrentFont.MagY);
                 }
             } else {
-                // 0=黒の描画　前景
-                if (CurrentFont.MagX * CurrentFont.MagY == 1) //拡大していない時
+                // 0=���̕`��@�O�i
+                if (CurrentFont.MagX * CurrentFont.MagY == 1) //�g�債�Ă��Ȃ���
                     draw_pixel(TextColor);
                 else
                     display_fillRect(xp, yp, CurrentFont.MagX, CurrentFont.MagY, TextColor);
@@ -486,12 +486,12 @@ uint8_t displayCustom_putc(uint8_t c) {
             line <<= 1;
         }
         remainingLine--;
-        pos = pos + 3-((pos-1) % 4); //4バイト単位なので、切り上げる
+        pos = pos + 3-((pos-1) % 4); //4�o�C�g�P�ʂȂ̂ŁA�؂�グ��
     }    
     
     f_close(&FileFont);
     
-    px = fontXsize * CurrentFont.MagX + CurrentFont.XpitchAdj; //XpitchAdjをフォントのサイズに追加
+    px = fontXsize * CurrentFont.MagX + CurrentFont.XpitchAdj; //XpitchAdj���t�H���g�̃T�C�Y�ɒǉ�
     Cursor_x += px;
     py = fontYsize * CurrentFont.MagY + CurrentFont.YpitchAdj;
     if (Wrap && (Cursor_x + px) > LCD_WIDTH) {
@@ -506,8 +506,8 @@ uint8_t displayCustom_putc(uint8_t c) {
 
 
 /*
- * 設定されているカーソル位置、色、サイズをそのまま使う時はこれを呼び出す
- * 途中でエラーあったら、中止
+ * �ݒ肳��Ă���J�[�\���ʒu�A�F�A�T�C�Y�����̂܂܎g�����͂�����Ăяo��
+ * �r���ŃG���[��������A���~
  */
 uint8_t displayCustom_puts(char *s) {
     uint8_t res;
@@ -518,9 +518,9 @@ uint8_t displayCustom_puts(char *s) {
         res = displayCustom_putc(*s++);
        
 //        if (res) {
-//            //時刻の更新がされない状態の時、どこでエラー発生しているか確認するため
+//            //�����̍X�V������Ȃ���Ԃ̎��A�ǂ��ŃG���[�������Ă��邩�m�F���邽��
 ////            DEBUG_PRINTF("err=%d\r\n", res);
-//            return 1;  //ここを変更   
+//            return 1;  //������ύX   
 //        }
     }
 //    Textcolor = preColor;
@@ -530,20 +530,20 @@ uint8_t displayCustom_puts(char *s) {
 
 
 /*
- * テキスト表示する前処理
+ * �e�L�X�g�\������O����
  */
 void presetting(ObjectRsc *rsc) {
 
-    SetFont(rsc->fontcode, rsc->fontName);   //フォントの設定
+    SetFont(rsc->fontcode, rsc->fontName);   //�t�H���g�̐ݒ�
     display_setTextSize(rsc->fontmag);
     display_setTextPitchAdj(rsc->xpitchAdj, 0);
-    display_setCursor(rsc->x, rsc->y);        //描画開始座標
+    display_setCursor(rsc->x, rsc->y);        //�`��J�n���W
     display_setColor(rsc->color);
 //    CustomYsize = CurrentFont.ypitch * TextMagY + YpitchAdj;
 }
 
 
-// DateTimeの初期化し、前のモードの状態、特にアナログの針の表示を引きずらないように
+// DateTime�̏��������A�O�̃��[�h�̏�ԁA���ɃA�i���O�̐j�̕\������������Ȃ��悤��
 void resetPreDateTime(void) {
     uint8_t jj;
     
@@ -551,25 +551,25 @@ void resetPreDateTime(void) {
 }
 
 /*
- * リソースデータから以下を取得
- * (x,y)座標を左上の起点
- * 文字の外形より2ドット分大きめの領域を描画域と想定
- * format: HHMMssなど
- * fontmag: フォントサイズ
- *  通常の7セグを指定された時、HHMMssのssは、小さい7セグフォントを使用
- * 　　　　　デフォルトで小さい7セグ指定された時は、同じ大きさ
- * サポートするフォントは、7seg、Custom0とCustom1の3つ
+ * ���\�[�X�f�[�^����ȉ����擾
+ * (x,y)���W������̋N�_
+ * �����̊O�`���2�h�b�g���傫�߂̗̈��`���Ƒz��
+ * format: HHMMss�Ȃ�
+ * fontmag: �t�H���g�T�C�Y
+ *  �ʏ��7�Z�O���w�肳�ꂽ���AHHMMss��ss�́A������7�Z�O�t�H���g���g�p
+ * �@�@�@�@�@�f�t�H���g�ŏ�����7�Z�O�w�肳�ꂽ���́A�����傫��
+ * �T�|�[�g����t�H���g�́A7seg�ACustom0��Custom1��3��
  * 
  */
 void dispTime(uint8_t *datetime, ObjectRsc *rsc) {
     char ss[10];
 //    int16_t tempYsize;
 
-    //ベースとなるフォントのディレクトリを指定
-    //Segment7NumかSegment7sNumを想定している
+    //�x�[�X�ƂȂ�t�H���g�̃f�B���N�g�����w��
+    //Segment7Num��Segment7sNum��z�肵�Ă���
     presetting(rsc);
 
-    //書き換えが必要な桁だけ描画していたが、描画を効率化して、毎回描画でも問題なくなった
+    //�����������K�v�Ȍ������`�悵�Ă������A�`������������āA����`��ł����Ȃ��Ȃ���
     if (rsc->format == HHMM) {
         sprintf(ss, "%02x:%02x", datetime[2], datetime[1]);
         display_puts(ss);
@@ -580,37 +580,37 @@ void dispTime(uint8_t *datetime, ObjectRsc *rsc) {
     }
     else if (rsc->format == HHMMss) {
         sprintf(ss, "%02x:%02x", datetime[2], datetime[1]);
-        //このルーチンで、Cursor自動的に進む
+        //���̃��[�`���ŁACursor�����I�ɐi��
         display_puts(ss);
         
-        //フォントサイズを小さく
+        //�t�H���g�T�C�Y��������
         if (rsc->fontcode >= EXTFONTCODE) {
-            // Userフォントで、smalllフォント定義ない時の処置が未了
+            // User�t�H���g�ŁAsmalll�t�H���g��`�Ȃ����̏��u������
             strcpy(Smaller, "s");
         } else {
-            //Y方向だけ1サイズ小さくする
-//            display_setTextSize(rsc->fontmag - 0x01); //MagYが0になっても、エラーにならないようになっている
+            //Y��������1�T�C�Y����������
+//            display_setTextSize(rsc->fontmag - 0x01); //MagY��0�ɂȂ��Ă��A�G���[�ɂȂ�Ȃ��悤�ɂȂ��Ă���
             uint8_t xs = (rsc-> fontmag) >> 4;
             uint8_t ys = (rsc-> fontmag) & 0x0f;
             ys = ys / 2 + 1;
             xs = xs / 2 + 1;
-            display_setTextSize((uint8_t)(xs << 4) + ys); //MagYが0になっても、エラーにならないようになっている
+            display_setTextSize((uint8_t)(xs << 4) + ys); //MagY��0�ɂȂ��Ă��A�G���[�ɂȂ�Ȃ��悤�ɂȂ��Ă���
             
         }
         sprintf(ss, "%02x", datetime[0]);
         display_puts(ss);
         Smaller[0] = '\0';
     }
-    display_setTextPitchAdj(0, 0); //presettingとペアで元に戻す
+    display_setTextPitchAdj(0, 0); //presetting�ƃy�A�Ō��ɖ߂�
 }
 
 
-// θ=0~179度まで、sinθの256倍にしたsinテーブル
-//　アラーム針を5分単位にした場合、2.5度単位(30度で12分割)が欲しい。1度単位で妥協
-//sin(θ): θ=角度
-//180度以降は、-sin(θ-180)という形で参照
-//cos(θ)=sin(θ+90)で計算
-//1度単位のテーブル
+// ��=0~179�x�܂ŁAsin�Ƃ�256�{�ɂ���sin�e�[�u��
+//�@�A���[���j��5���P�ʂɂ����ꍇ�A2.5�x�P��(30�x��12����)���~�����B1�x�P�ʂőË�
+//sin(��): ��=�p�x
+//180�x�ȍ~�́A-sin(��-180)�Ƃ����`�ŎQ��
+//cos(��)=sin(��+90)�Ōv�Z
+//1�x�P�ʂ̃e�[�u��
 const int16_t sin_table[] = {
     //0    1    2    3    4    5    6    7    8    9
       0,   4,   8,  13,  17,  22,  26,  31,  35,  40,   //00-
@@ -633,52 +633,52 @@ const int16_t sin_table[] = {
      44,  40,  35,  31,  26,  22,  17,  13,   8,   4,   //170-
 };
 
-//degreeで指定された角度=thetaに対応したsinを返す(x256)
+//degree�Ŏw�肳�ꂽ�p�x=theta�ɑΉ�����sin��Ԃ�(x256)
 int16_t sind(int16_t theta) {
-    theta = (theta + 360) % 360;    //thetaがマイナスでも対応させるため
+    theta = (theta + 360) % 360;    //theta���}�C�i�X�ł��Ή������邽��
 
     if (theta >= 180) {
-        //-sind(θ-180)
-        return -sin_table[(UINT)(theta-180)];          //度単位のテーブル用
+        //-sind(��-180)
+        return -sin_table[(UINT)(theta-180)];          //�x�P�ʂ̃e�[�u���p
     } else {
         return sin_table[(UINT)theta];
     }
 }
 
-//degreeで指定された角度=thetaに対応したcosを返す(x256)
+//degree�Ŏw�肳�ꂽ�p�x=theta�ɑΉ�����cos��Ԃ�(x256)
 int16_t cosd(int16_t theta) {
     theta = theta+90;
     return sind(theta);
 }
 
 /*
- * アナログ時計表示
+ * �A�i���O���v�\��
  * mode: 
- * datetime: 日付時間
- * xx, yy: 中心座標
- * size: 外形円の大きさ
- * color: 針の色指定
+ * datetime: ���t����
+ * xx, yy: ���S���W
+ * size: �O�`�~�̑傫��
+ * color: �j�̐F�w��
  */
-#define SizeMin  3      //分針の太さ
-#define SizeHour 4      //時針の太さ
+#define SizeMin  3      //���j�̑���
+#define SizeHour 4      //���j�̑���
 //#define ColorHour   GREY
 //#define ColorMin    GREY
 #define ColorSec    RED
 #define ColorAlarm  YELLOW
 
 /*
- * アナログ時計のアラーム針を描画/消去
+ * �A�i���O���v�̃A���[���j��`��/����
  */
 void drawAlarmNeedle(int16_t *x, int16_t *y, uint16_t color) {
     int16_t xd, yd;
     
-    //アラーム針描画
+    //�A���[���j�`��
     display_drawLine(x[0], y[0], x[1], y[1], color);
     
     xd = (int16_t)(x[1]-x[0]);
     yd = (int16_t)(y[1]-y[0]);
     if ( ABS(yd) > ABS(xd)) {
-        //角度により、移動する方向を変え、少し太くする
+        //�p�x�ɂ��A�ړ����������ς��A������������
         display_drawLine(x[0]+1, y[0], x[1]+1, y[1], color);
         display_drawLine(x[0]-1, y[0], x[1]-1, y[1], color);
     } else {
@@ -687,17 +687,17 @@ void drawAlarmNeedle(int16_t *x, int16_t *y, uint16_t color) {
     }
 }
 
-//時針、分針の描画/消去
+//���j�A���j�̕`��/����
 void drawNeedle(int16_t *x, int16_t *y, uint16_t color, uint16_t color2) {
     display_fillTriangle(x[1], y[1], x[2], y[2], x[3], y[3], color);
     display_drawTriangle(x[1], y[1], x[2], y[2], x[3], y[3], color2);
-    //反対側の出っ張り
+    //���Α��̏o������
     display_fillTriangle(x[4], y[4], x[2], y[2], x[3], y[3], color);
     display_drawTriangle(x[4], y[4], x[2], y[2], x[3], y[3], color2);
 
 }
 
-//秒針の描画/消去
+//�b�j�̕`��/����
 void drawSecNeedle(int16_t *x, int16_t *y, uint16_t color) {
     display_drawLine(x[1], y[1], x[2], y[2], color);
     display_fillTriangle(x[0], y[0], x[3], y[3], x[4], y[4], color);
@@ -705,123 +705,123 @@ void drawSecNeedle(int16_t *x, int16_t *y, uint16_t color) {
 }
 
         
-//アラーム針の長さは長針の75%
-//長針：分針の長さは、目盛の線より3ドット内側
-//短針
-//秒針
-//目盛の長さ=3
-//ドットの大きさ=2
+//�A���[���j�̒����͒��j��75%
+//���j�F���j�̒����́A�ڐ��̐����3�h�b�g����
+//�Z�j
+//�b�j
+//�ڐ��̒���=3
+//�h�b�g�̑傫��=2
 void drawAnalogClock(uint8_t *datetime, ObjectRsc *rsc, uint8_t *alarmtime) {
-    int16_t rc = rsc->attribute /2; //外形の半径
-    int16_t xc = rsc->x + rc;    //時計の中心座標
+    int16_t rc = rsc->attribute /2; //�O�`�̔��a
+    int16_t xc = rsc->x + rc;    //���v�̒��S���W
     int16_t yc = rsc->y + rc;
     uint16_t color = rsc->color;
     uint16_t bcolor;
 
-    int16_t rc1, rcs, rcm, rch, rca;    //時計の目盛、秒針、分針、時針、アラーム
+    int16_t rc1, rcs, rcm, rch, rca;    //���v�̖ڐ��A�b�j�A���j�A���j�A�A���[��
     int16_t rc2;
-    int16_t rcs2, rcm2, rcm3, rch2, rch3, rca2;    //時計のサイズ、目盛、秒針、分針、時針、アラーム
-    int16_t x[5], y[5];    //座標計算した結果を格納
+    int16_t rcs2, rcm2, rcm3, rch2, rch3, rca2;    //���v�̃T�C�Y�A�ڐ��A�b�j�A���j�A���j�A�A���[��
+    int16_t x[5], y[5];    //���W�v�Z�������ʂ��i�[
     int16_t angle;
     uint8_t hh, mm, ss, jj, kk;
     uint8_t almhh, almmm;
-    //前回の座標　時針、分針、秒針、アラームを描画するための頂点の座標を保持
+    //�O��̍��W�@���j�A���j�A�b�j�A�A���[����`�悷�邽�߂̒��_�̍��W��ێ�
     static int16_t phx[5], phy[5], pmx[5], pmy[5], psx[5], psy[5], pax[2], pay[2];
-    //今回の座標
+    //����̍��W
     int16_t chx[5], chy[5], cmx[5], cmy[5], csx[5], csy[5], cax[2], cay[2];
     char str[3];
     int8_t minupdate = 0;
 
-    rsc->xw = (int16_t)rsc->attribute; //外形サイズ更新
+    rsc->xw = (int16_t)rsc->attribute; //�O�`�T�C�Y�X�V
     rsc->yw = rsc->xw;
 
-    //外形円の描画
-    display_drawCircle(xc, yc, rc, color);  //sizeで指定された円
+    //�O�`�~�̕`��
+    display_drawCircle(xc, yc, rc, color);  //size�Ŏw�肳�ꂽ�~
     rc = rc -3;
-    display_drawCircle(xc, yc, rc, color);  //一回り小さめの円
+    display_drawCircle(xc, yc, rc, color);  //���菬���߂̉~
 
-    rc1 = rc - 3;        // 一番長い長針の長さ=目盛より内側に設定
-    rca = rc1 *3 /4;    //アラーム用の針の長さは、長針の75%
-    rch = rc1 *7/10;    //短針の長さは、70%
-    rcm = rc1 -5;       //分針の長さは、目盛の線より3ドット内側
-    rcs = rc1 -4;       //秒針の長さは、これ
+    rc1 = rc - 3;        // ��Ԓ������j�̒���=�ڐ��������ɐݒ�
+    rca = rc1 *3 /4;    //�A���[���p�̐j�̒����́A���j��75%
+    rch = rc1 *7/10;    //�Z�j�̒����́A70%
+    rcm = rc1 -5;       //���j�̒����́A�ڐ��̐����3�h�b�g����
+    rcs = rc1 -4;       //�b�j�̒����́A����
 
-    //アラーム針の描画準備----------------------------------------------------
-    //最新のアラーム針の座標を計算
+    //�A���[���j�̕`�揀��----------------------------------------------------
+    //�ŐV�̃A���[���j�̍��W���v�Z
     almmm = Bcd2Hex(alarmtime[0]);
     almhh = Bcd2Hex(alarmtime[1]) % 12;
-    angle = almhh * 30 + almmm/2;   //角度に変換
-    cax[0] = xc;    //中心座標
+    angle = almhh * 30 + almmm/2;   //�p�x�ɕϊ�
+    cax[0] = xc;    //���S���W
     cay[0] = yc;
-    cax[1] = xc + rca * sind(angle)/256;    //アラーム針の先の座標
+    cax[1] = xc + rca * sind(angle)/256;    //�A���[���j�̐�̍��W
     cay[1] = yc - rca * cosd(angle)/256;
     
-    //ちらつきをなくすため、表示に変化ある針だけを消去し、それ以外は上書きする
-    //前の表示を消す
+    //��������Ȃ������߁A�\���ɕω�����j�������������A����ȊO�͏㏑������
+    //�O�̕\��������
     if ((cax[1] == pax[1]) && (cay[1] == pay[1])) {
-        //前と座標が変わっていない時は、消さない。最初の描画も同じ座標にしているので消去しない
+        //�O�ƍ��W���ς���Ă��Ȃ����́A�����Ȃ��B�ŏ��̕`����������W�ɂ��Ă���̂ŏ������Ȃ�
     } else {
-        drawAlarmNeedle(pax, pay, TextbgColor);   //元の秒針を消す
-        //描画用の座標を保存
+        drawAlarmNeedle(pax, pay, TextbgColor);   //���̕b�j������
+        //�`��p�̍��W��ۑ�
         for (jj=0; jj<2; jj++) {
             pax[jj] = cax[jj];
             pay[jj] = cay[jj];
         }
     }
 
-    //分針の描画準備--------------------------------------------------------
-    //分針の位置が変わったら、再描画の前に、元の時針、分針を消す
+    //���j�̕`�揀��--------------------------------------------------------
+    //���j�̈ʒu���ς������A�ĕ`��̑O�ɁA���̎��j�A���j������
     mm = Bcd2Hex(datetime[1]);
     if (preTime[1] != datetime[1]) {
         preTime[1] = datetime[1];
         hh = Bcd2Hex(datetime[2]);
 
-        //分針の座標を計算
-        angle = mm * 6;     //1分6度
-        cmx[1] = xc + rcm * sind(angle)/256;    //針先の座標
+        //���j�̍��W���v�Z
+        angle = mm * 6;     //1��6�x
+        cmx[1] = xc + rcm * sind(angle)/256;    //�j��̍��W
         cmy[1] = yc - rcm * cosd(angle)/256;
     
-        rcm2 = SizeMin;       //分針の幅
-        angle = angle +90;  //針に対して90度の角度
+        rcm2 = SizeMin;       //���j�̕�
+        angle = angle +90;  //�j�ɑ΂���90�x�̊p�x
         cmx[2] = xc + rcm2 * sind(angle)/256;
         cmy[2] = yc - rcm2 * cosd(angle)/256;
         cmx[3] = xc - (cmx[2]-xc);
         cmy[3] = yc - (cmy[2]-yc);
 
-        //反対側の出っ張り
-        rcm3 = 10;      //出っ張り長さ
-        angle = angle +90;  //さらに90度足す
+        //���Α��̏o������
+        rcm3 = 10;      //�o�����蒷��
+        angle = angle +90;  //�����90�x����
         cmx[4] = xc + rcm3 * sind(angle)/256;
         cmy[4] = yc - rcm3 * cosd(angle)/256;
 
-        //時針の座標計算：分針が移動したら、時針も移動計算 (実際は2分毎)
-        //　分のデータも取り込んで時針の角度決める
+        //���j�̍��W�v�Z�F���j���ړ�������A���j���ړ��v�Z (���ۂ�2����)
+        //�@���̃f�[�^����荞��Ŏ��j�̊p�x���߂�
         hh = hh % 12;
-        angle = hh * 30 + mm/2;   //角度に変換 8bit変数ではNG
+        angle = hh * 30 + mm/2;   //�p�x�ɕϊ� 8bit�ϐ��ł�NG
         
-        chx[1] = xc + rch * sind(angle)/256;    //針先の座標
+        chx[1] = xc + rch * sind(angle)/256;    //�j��̍��W
         chy[1] = yc - rch * cosd(angle)/256;
         
-        rch2 = SizeHour;    //時針の幅
-        angle = angle +90;  //針に対して90度の角度
+        rch2 = SizeHour;    //���j�̕�
+        angle = angle +90;  //�j�ɑ΂���90�x�̊p�x
         chx[2] = xc + rch2 * sind(angle)/256;
         chy[2] = yc - rch2 * cosd(angle)/256;
         chx[3] = xc - (chx[2]-xc);
         chy[3] = yc - (chy[2]-yc);
         
-        //反対側の出っ張り
-        rch3 = 10;      //出っ張り長さ
-        angle = angle +90;  //さらに90度足す
+        //���Α��̏o������
+        rch3 = 10;      //�o�����蒷��
+        angle = angle +90;  //�����90�x����
         chx[4] = xc + rch3 * sind(angle)/256;
         chy[4] = yc - rch3 * cosd(angle)/256;
         
-        //分が変更になり時間が変わる時は、分の変更と同時に時針の消去
+        //�����ύX�ɂȂ莞�Ԃ��ς�鎞�́A���̕ύX�Ɠ����Ɏ��j�̏���
         drawNeedle(phx, phy, TextbgColor, TextbgColor);
-        //分針の消去
+        //���j�̏���
         drawNeedle(pmx, pmy, TextbgColor, TextbgColor);
-        minupdate = 1;  //分針updateした
+        minupdate = 1;  //���jupdate����
 
-        //描画座標を保存
+        //�`����W��ۑ�
         for (jj=1; jj<5; jj++) {
             phx[jj] = chx[jj];
             phy[jj] = chy[jj];
@@ -830,17 +830,17 @@ void drawAnalogClock(uint8_t *datetime, ObjectRsc *rsc, uint8_t *alarmtime) {
         }
     }
 
-    //最新の秒針の座標を計算
+    //�ŐV�̕b�j�̍��W���v�Z
     if (preTime[0] != datetime[0]) {
         preTime[0] = datetime[0];
-        ss = Bcd2Hex(datetime[0]);  //0-59の数値
+        ss = Bcd2Hex(datetime[0]);  //0-59�̐��l
         angle = ss*6;
-        csx[0] = xc;  //中心座標
+        csx[0] = xc;  //���S���W
         csy[0] = yc;
         csx[1] = xc + rcs * sind(angle)/256;
         csy[1] = yc - rcs * cosd(angle)/256;
         
-        rcs2 = 20;   //反対側に出っ張る量
+        rcs2 = 20;   //���Α��ɏo�������
         angle = angle +180;
         csx[2] = xc + rcs2 * sind(angle)/256;
         csy[2] = yc - rcs2 * cosd(angle)/256;
@@ -849,50 +849,50 @@ void drawAnalogClock(uint8_t *datetime, ObjectRsc *rsc, uint8_t *alarmtime) {
         csx[4] = xc + rcs2 * sind(angle-6)/256;
         csy[4] = yc - rcs2 * cosd(angle-6)/256;
         
-        //秒針を消去
+        //�b�j������
         drawSecNeedle(psx, psy, TextbgColor);
 
-        //描画座標を保存
+        //�`����W��ۑ�
         for (jj=0; jj<5; jj++) {
             psx[jj] = csx[jj];
             psy[jj] = csy[jj];
         }
     }
     
-    //目盛と数字の描画------------------------------------------------------------
+    //�ڐ��Ɛ����̕`��------------------------------------------------------------
     SetFont(FontNormal, NULL);
     display_setTextSize(rsc->fontmag);
     display_setTextPitchAdj(rsc->xpitchAdj, 0);
-    //文字盤の数字の位置
+    //�����Ղ̐����̈ʒu
     rc2 = rc1 - CurrentFont.xpitch * ((CurrentFont.MagX > CurrentFont.MagY) ? CurrentFont.MagX : CurrentFont.MagY);
 
     for (jj=0; jj<60; jj++) {
         angle = jj*6;
-        x[1] = xc + (rc * sind(angle)+127)/256; //単純に256で割ると切捨てになるので+127として四捨五入的にしてみた
+        x[1] = xc + (rc * sind(angle)+127)/256; //�P����256�Ŋ���Ɛ؎̂ĂɂȂ�̂�+127�Ƃ��Ďl�̌ܓ��I�ɂ��Ă݂�
         y[1] = yc - (rc * cosd(angle)+127)/256;
         x[2] = xc + (rc1 * sind(angle)+127)/256;
         y[2] = yc - (rc1 * cosd(angle)+127)/256;
         
         if (jj % 5 == 0) {
-            //5の倍数の所に文字盤の数値を表示
-            display_fillCircle(x[2], y[2], 2, color);   //時の所は、ドット、半径2
-            //文字盤表示
+            //5�̔{���̏��ɕ����Ղ̐��l��\��
+            display_fillCircle(x[2], y[2], 2, color);   //���̏��́A�h�b�g�A���a2
+            //�����Օ\��
             if (!((minupdate == 0) && (jj == mm))) {
-                //ただし、minupdate=0で、mmが5の倍数の時は、描画しない(そうしないとチラつく)
-                //つまり、分針が数字にかかっていて、書き換えしない時は、数値は描画しないということ
+                //�������Aminupdate=0�ŁAmm��5�̔{���̎��́A�`�悵�Ȃ�(�������Ȃ��ƃ`����)
+                //�܂�A���j�������ɂ������Ă��āA�����������Ȃ����́A���l�͕`�悵�Ȃ��Ƃ�������
 //                x[3] = xc + (rc2 * sind(angle))/256 -4;
                 x[3] = xc + (rc2 * sind(angle))/256 - CurrentFont.xsize / 2 * CurrentFont.MagX;
 //                y[3] = yc - (rc2 * cosd(angle))/256 -3;
                 y[3] = yc - (rc2 * cosd(angle))/256 - CurrentFont.ysize / 2 * CurrentFont.MagY;
-                //表示する数字を設定
-                if (jj==0) kk = 12;   //0時の所は、12に設定
+                //�\�����鐔����ݒ�
+                if (jj==0) kk = 12;   //0���̏��́A12�ɐݒ�
                 else kk = jj / 5;
-//                if (kk>9) x[3] = x[3] - 3;  //2桁の時刻の時の位置調整
-                if (kk>9) x[3] = x[3] - CurrentFont.xsize / 2 * CurrentFont.MagX;  //2桁の時刻の時の位置調整
+//                if (kk>9) x[3] = x[3] - 3;  //2���̎����̎��̈ʒu����
+                if (kk>9) x[3] = x[3] - CurrentFont.xsize / 2 * CurrentFont.MagX;  //2���̎����̎��̈ʒu����
                 
                 sprintf(str, "%d", kk);
-                //背景色を同じにすると、背景色を塗らない=透明と同じ
-                //1桁数値と2桁数値で位置を調整
+                //�w�i�F�𓯂��ɂ���ƁA�w�i�F��h��Ȃ�=�����Ɠ���
+                //1�����l��2�����l�ňʒu�𒲐�
                 display_drawChars(x[3], y[3], str, color, color, rsc->fontmag);
             }
         } else {
@@ -900,9 +900,9 @@ void drawAnalogClock(uint8_t *datetime, ObjectRsc *rsc, uint8_t *alarmtime) {
         }
     }
     
-    // AM/PMの表示
-    //ちらつきをなくすため、背景部分は変化させない描画を行うが、
-    //AM/PMの切替時だけ、背景描画実施
+    // AM/PM�̕\��
+    //��������Ȃ������߁A�w�i�����͕ω������Ȃ��`����s�����A
+    //AM/PM�̐ؑ֎������A�w�i�`����{
     if (Bcd2Hex(preTime[2])/12 != Bcd2Hex(datetime[2])/12) {
         bcolor = TextbgColor;
     }
@@ -912,41 +912,41 @@ void drawAnalogClock(uint8_t *datetime, ObjectRsc *rsc, uint8_t *alarmtime) {
     preTime[2] = datetime[2];
     if (datetime[2] < 0x12) strcpy(str, "AM");
     else strcpy(str, "PM");
-    //午前午後の表示を大きさに応じて変える　8ドットサイズをベースにしている
-    //大きなフォントサイズの時も対応させるように、16ドット以上のフォント
+    //�ߑO�ߌ�̕\����傫���ɉ����ĕς���@8�h�b�g�T�C�Y���x�[�X�ɂ��Ă���
+    //�傫�ȃt�H���g�T�C�Y�̎����Ή�������悤�ɁA16�h�b�g�ȏ�̃t�H���g
 //    int16_t size = ((rc+3) / 70) * ( (CurrentFont.xsize < 15) ? (1) : (0) ) + 1;
 //    display_drawChars(xc-CurrentFont.xpitch * size, yc+rc/2, str, color, bcolor, 0x11 * size);
 
     display_drawChars(xc-CurrentFont.xpitch * CurrentFont.MagX, yc+rc - 3 * CurrentFont.ysize * (CurrentFont.MagY), str, color, bcolor, rsc->fontmag);
     
-    //ここから、針の描画を実行
-    //アラーム針描画------------------------------------------------------
-    drawAlarmNeedle(pax, pay, ColorAlarm);  //アラーム針の色
+    //��������A�j�̕`������s
+    //�A���[���j�`��------------------------------------------------------
+    drawAlarmNeedle(pax, pay, ColorAlarm);  //�A���[���j�̐F
 
-    //時針の描画------------------------------------------------------
-    drawNeedle(phx, phy, color, WHITE);    //時針の色は、引数からもらう
+    //���j�̕`��------------------------------------------------------
+    drawNeedle(phx, phy, color, WHITE);    //���j�̐F�́A����������炤
 
-    //分針の描画------------------------------------------------------
+    //���j�̕`��------------------------------------------------------
     drawNeedle(pmx, pmy, color, WHITE);
 
-    //秒針の描画------------------------------------------------------
-    display_fillCircle(xc, yc, 3, ColorSec);    //秒針の中央円
+    //�b�j�̕`��------------------------------------------------------
+    display_fillCircle(xc, yc, 3, ColorSec);    //�b�j�̒����~
     drawSecNeedle(psx, psy, ColorSec);
     
 }
 
 /*
- * リソースで指定された設定で時刻を表示
+ * ���\�[�X�Ŏw�肳�ꂽ�ݒ�Ŏ�����\��
  */
 void DrawTime(uint8_t *datetime, ObjectRsc *rsc) {
 
     if (rsc->disp) {
-        //RscIDをそのオブジェクトの有無(=表示するかどうか)に利用
+        //RscID�����̃I�u�W�F�N�g�̗L��(=�\�����邩�ǂ���)�ɗ��p
         if (rsc->format == ANALOGCLOCK) {
-            //外形円の座標= (140, 130) 半径=90
-            //アナログ時計表示の場合は、アラーム針も同時に表示
+            //�O�`�~�̍��W= (140, 130) ���a=90
+            //�A�i���O���v�\���̏ꍇ�́A�A���[���j�������ɕ\��
             drawAnalogClock(datetime, rsc, AlarmTime);
-            //アナログ時計の大きさは、xwに設定されている半径の2倍
+            //�A�i���O���v�̑傫���́Axw�ɐݒ肳��Ă��锼�a��2�{
         } else {
             dispTime(datetime, rsc);
             rsc->xw = Cursor_x - rsc->x;
@@ -956,58 +956,58 @@ void DrawTime(uint8_t *datetime, ObjectRsc *rsc) {
 }
 
 /*
- * 曜日のフォントがあるかちぇっくして、なければNormalフォントに切り替える
- * 切り替えた時は、1を返す
+ * �j���̃t�H���g�����邩�����������āA�Ȃ����Normal�t�H���g�ɐ؂�ւ���
+ * �؂�ւ������́A1��Ԃ�
  */
 int8_t CheckSunday(ObjectRsc *rsc) {
     char filename[30];
-    FIL file;       //Openingやデータ書き込み用
+    FIL file;       //Opening��f�[�^�������ݗp
     FRESULT res;
 
     if (CurrentFont.fontcode == EXTFONTCODE) {
-        //Sun.bmpがある前提で、その大きさを取得する
+        //Sun.bmp������O��ŁA���̑傫�����擾����
         sprintf(filename, "/%s/Sun.bmp", CurrentFont.fontName);
         if (f_open(&file, filename, FA_READ) == FR_OK) {
-            return 0;        //曜日フォントあり
+            return 0;        //�j���t�H���g����
         }        
     }
-    //曜日フォントない時、ノーマルフォントの曜日を利用
-    SetFont(FontNormal, NULL); //曜日は、内蔵フォントを使う形にしているが、カスタムで曜日のフォントも持っている場合を考慮させたい＜＜＜＜＜＜＜＜＜＜
-    display_setTextSize(rsc->fontmag);    //fontsizeの上位4bit=X倍率、下位4bit=Y倍率
+    //�j���t�H���g�Ȃ����A�m�[�}���t�H���g�̗j���𗘗p
+    SetFont(FontNormal, NULL); //�j���́A�����t�H���g���g���`�ɂ��Ă��邪�A�J�X�^���ŗj���̃t�H���g�������Ă���ꍇ���l������������������������������
+    display_setTextSize(rsc->fontmag);    //fontsize�̏��4bit=X�{���A����4bit=Y�{��
     return 1;
 }
 
-#define SpacebtwMonths  10  //カレンダーを横に並べたときのスペース
-#define SpacebtwDays    2  //日付間の間隔　xpitchAdjは2桁の日付の文字間隔に使用
+#define SpacebtwMonths  10  //�J�����_�[�����ɕ��ׂ��Ƃ��̃X�y�[�X
+#define SpacebtwDays    2  //���t�Ԃ̊Ԋu�@xpitchAdj��2���̓��t�̕����Ԋu�Ɏg�p
 
 /*
- * カレンダーを横に3か月表示
- * 月間10ドットだと、300ドットに21日分表示必要。300/21=14ドット　日付間2ドットだと、1文字6ドット以下
+ * �J�����_�[������3�����\��
+ * ����10�h�b�g���ƁA300�h�b�g��21�����\���K�v�B300/21=14�h�b�g�@���t��2�h�b�g���ƁA1����6�h�b�g�ȉ�
  * 
- * 15ドットだとしても、*21=315ドットなので、間隔を2ドットにすれば入る計算
- * フォントとしては、横7ドットだと、完全にくっ付けて、次の日との間隔を1ドットにする必要があり、見た目にも厳しそう
- * リソースで指定されたフォントに応じて描画
- * 　　Small:　月と曜日はNormalフォント使用する
- * 　　Normal: 全部ノーマルで描画
- * 左上の座標: xs, ys
- * 描画する年月: year, month
+ * 15�h�b�g���Ƃ��Ă��A*21=315�h�b�g�Ȃ̂ŁA�Ԋu��2�h�b�g�ɂ���Γ���v�Z
+ * �t�H���g�Ƃ��ẮA��7�h�b�g���ƁA���S�ɂ����t���āA���̓��Ƃ̊Ԋu��1�h�b�g�ɂ���K�v������A�����ڂɂ���������
+ * ���\�[�X�Ŏw�肳�ꂽ�t�H���g�ɉ����ĕ`��
+ * �@�@Small:�@���Ɨj����Normal�t�H���g�g�p����
+ * �@�@Normal: �S���m�[�}���ŕ`��
+ * ����̍��W: xs, ys
+ * �`�悷��N��: year, month
  */
 void basicDrawCalendar(uint8_t year, uint8_t month, int16_t xs, int16_t ys, ObjectRsc *rsc) {
     uint8_t jj, kk;
     int16_t xx, yy;
     char str[5];
-    int8_t currentDay;    //最初の日曜の日付、0以下は前月
+    int8_t currentDay;    //�ŏ��̓��j�̓��t�A0�ȉ��͑O��
     int8_t maxdays;
     uint8_t yr, mm, dd, wd;
     uint8_t thismonth, targetDay;
-    //曜日ごとの色指定
+    //�j�����Ƃ̐F�w��
     uint16_t dayColor[7];   // = {RED, WHITE, WHITE, WHITE, WHITE, WHITE, BLUE, };
-    uint8_t xpitch, ypitch; // 表示ピッチ
+    uint8_t xpitch, ypitch; // �\���s�b�`
     uint8_t mulx, muly, mul;
     char w;
     int8_t res;
 
-    //前月、次月の表示のため、0月、13月という設定を許すので、ここで修正
+    //�O���A�����̕\���̂��߁A0���A13���Ƃ����ݒ�������̂ŁA�����ŏC��
     if (month == 0) {
         month = 12;
         year--;
@@ -1020,86 +1020,86 @@ void basicDrawCalendar(uint8_t year, uint8_t month, int16_t xs, int16_t ys, Obje
     yr = year;
     mm = month;
     dd = 1;
-    wd = getWeekdays(&yr, &mm, &dd);  //月初めの曜日を取得
-    //表示する最初の日付を仮想的に何日か設定
-    //1日が日曜なら1のまま、月曜なら最初の日曜日は0日、火曜なら-1、水曜なら-2になる
+    wd = getWeekdays(&yr, &mm, &dd);  //�����߂̗j�����擾
+    //�\������ŏ��̓��t�����z�I�ɉ������ݒ�
+    //1�������j�Ȃ�1�̂܂܁A���j�Ȃ�ŏ��̓��j����0���A�Ηj�Ȃ�-1�A���j�Ȃ�-2�ɂȂ�
     currentDay = (int8_t)(1- wd);
     
-    //当該月の最終日を取得。その月が何日あるかを把握
+    //���Y���̍ŏI�����擾�B���̌����������邩��c��
     dd = 31;
-    getWeekdays(&yr, &mm, &dd);  //31日の曜日を取得。その日がない場合、自動調整される
-    //mmが変更になったら、31日ではなかったとわかる。
-    //ddが31日が1日に変わっていたら、その月は30日だったとわかる。2月、うるう年も対応。
+    getWeekdays(&yr, &mm, &dd);  //31���̗j�����擾�B���̓����Ȃ��ꍇ�A�������������
+    //mm���ύX�ɂȂ�����A31���ł͂Ȃ������Ƃ킩��B
+    //dd��31����1���ɕς���Ă�����A���̌���30���������Ƃ킩��B2���A���邤�N���Ή��B
     if (month != mm) {
-        maxdays = (int8_t)(31 - dd);    //その月の最終日
+        maxdays = (int8_t)(31 - dd);    //���̌��̍ŏI��
     } else {
         maxdays = (int8_t) dd;
     }   
     
-    //曜日ごとの色をリソースから取得
+    //�j�����Ƃ̐F�����\�[�X����擾
     for (jj = 1; jj < 6; jj++) dayColor[jj] = rsc->color;
-    dayColor[0] = rsc->attribute2;   //日曜日の色
-    dayColor[6] = rsc->attribute;    //土曜日の色
+    dayColor[0] = rsc->attribute2;   //���j���̐F
+    dayColor[6] = rsc->attribute;    //�y�j���̐F
     
-    //指定された基本フォント情報を取得
+    //�w�肳�ꂽ��{�t�H���g�����擾
     SetFont(rsc->fontcode, rsc->fontName);
-    display_setTextSize(rsc->fontmag);    //上位4bit=X倍率、下位4bit=Y倍率
+    display_setTextSize(rsc->fontmag);    //���4bit=X�{���A����4bit=Y�{��
     display_setTextPitchAdj(rsc->xpitchAdj, 0);
 
-    xpitch = (uint8_t)(CurrentFont.xpitch * CurrentFont.MagX + CurrentFont.XpitchAdj)*2 + SpacebtwDays;  //1日=2文字+スペース
+    xpitch = (uint8_t)(CurrentFont.xpitch * CurrentFont.MagX + CurrentFont.XpitchAdj)*2 + SpacebtwDays;  //1��=2����+�X�y�[�X
     ypitch = (uint8_t)(CurrentFont.ypitch * CurrentFont.MagY + CurrentFont.YpitchAdj);
     
 //    DEBUG_PRINTF("%d, %d  %d,%d, xp=%d\r\n", xpitch, ypitch, CurrentFont.xpitch, CurrentFont.XpitchAdj, rsc->xpitchAdj);
 //    DEBUG_PRINTF("font %s: %d, %d\r\n", rsc->fontName, CurrentFont.xsize, CurrentFont.ysize);
 
-    //対象領域をクリア: fontwで14文字分+7日のスペース分、Y方向は8行分
-    //xの開始を1ドット左にして、サイズもその分大きく。枠を付けた時はみ出しを防止
-    CalendarXsize = xpitch*7;  //2桁の日付がベースになっているxpitchの7日分
-    CalendarYsize = ypitch * 8;     //月+曜日+最大の6週分
+    //�Ώۗ̈���N���A: fontw��14������+7���̃X�y�[�X���AY������8�s��
+    //x�̊J�n��1�h�b�g���ɂ��āA�T�C�Y�����̕��傫���B�g��t�������͂ݏo����h�~
+    CalendarXsize = xpitch*7;  //2���̓��t���x�[�X�ɂȂ��Ă���xpitch��7����
+    CalendarYsize = ypitch * 8;     //��+�j��+�ő��6�T��
 
-    //1か月分の領域をクリアする
+    //1�������̗̈���N���A����
     display_fillRect(xs, ys, CalendarXsize + SpacebtwMonths, CalendarYsize, TextbgColor);
 
-    //月の数字を描画
+    //���̐�����`��
     sprintf(str, "%d", month);
-    //中央に表示させる　横2倍で表示させるため、式後方は、/2をしていない
+    //�����ɕ\��������@��2�{�ŕ\�������邽�߁A������́A/2�����Ă��Ȃ�
     xx = xs + CalendarXsize/2 - (int16_t)strlen(str) * (int16_t)CurrentFont.xpitch;
-    //月表示は横方向2倍で描画
+    //���\���͉�����2�{�ŕ`��
     display_drawChars(xx, ys, str, rsc->color, TextbgColor, rsc->fontmag +0x10);
 
-    //曜日の描画
-    //曜日フォントがあるかどうか
+    //�j���̕`��
+    //�j���t�H���g�����邩�ǂ���
     res = CheckSunday(rsc);
-    //バランスのため、曜日の幅をpitchに収まる最大のサイズに拡大させる
+    //�o�����X�̂��߁A�j���̕���pitch�Ɏ��܂�ő�̃T�C�Y�Ɋg�傳����
     mulx = xpitch / CurrentFont.xsize;
     muly = ypitch / CurrentFont.ysize;
 
     yy = ys + ypitch;
-    xx = xs + (xpitch - CurrentFont.xsize * mulx)/2;   //中央になるように
+    xx = xs + (xpitch - CurrentFont.xsize * mulx)/2;   //�����ɂȂ�悤��
     mul = (uint8_t)(mulx << 4) + muly;
     str[1] = '\0';
     for (jj=0; jj<7; jj++) {
-        if (rsc->format >= Month1e) w = WeekDays[jj][0];  //SMTWTFSという表記方式
-        else w = FSunday + jj;    //日月火水木金土という表示
+        if (rsc->format >= Month1e) w = WeekDays[jj][0];  //SMTWTFS�Ƃ����\�L����
+        else w = FSunday + jj;    //�����ΐ��؋��y�Ƃ����\��
         str[0] = w;
         display_drawChars(xx, yy, str, dayColor[jj], TextbgColor, mul);
         xx += xpitch;
     }
     
-    //日付の描画
+    //���t�̕`��
     if (res) {
-        //曜日でフォント変更していた時は、フォント元に戻す
+        //�j���Ńt�H���g�ύX���Ă������́A�t�H���g���ɖ߂�
         SetFont(rsc->fontcode, rsc->fontName);
-        display_setTextSize(rsc->fontmag);    //上位4bit=X倍率、下位4bit=Y倍率
+        display_setTextSize(rsc->fontmag);    //���4bit=X�{���A����4bit=Y�{��
         display_setTextPitchAdj(rsc->xpitchAdj, 0);
     }
 
     yy += ypitch;
-    SetFont(rsc->fontcode, rsc->fontName);  //指定のフォントに戻す
-    display_setTextSize(rsc->fontmag);    //fontsizeの上位4bit=X倍率、下位4bit=Y倍率
+    SetFont(rsc->fontcode, rsc->fontName);  //�w��̃t�H���g�ɖ߂�
+    display_setTextSize(rsc->fontmag);    //fontsize�̏��4bit=X�{���A����4bit=Y�{��
     display_setTextPitchAdj(rsc->xpitchAdj, 0);
 
-    //今月のカレンダーを表示しているかをチェック。今日の日付に印をつけるかどうか判断させるため
+    //�����̃J�����_�[��\�����Ă��邩���`�F�b�N�B�����̓��t�Ɉ�����邩�ǂ������f�����邽��
     if (month == Bcd2Hex(DateTime[5])) thismonth = 1;
     else thismonth = 0;
     targetDay = Bcd2Hex(DateTime[4]);
@@ -1113,9 +1113,9 @@ void basicDrawCalendar(uint8_t year, uint8_t month, int16_t xs, int16_t ys, Obje
                 sprintf(str, "%2d", currentDay);
                 display_puts(str);
                 
-                //今日の日付に印をつける
+                //�����̓��t�Ɉ������
                 if (thismonth && (currentDay == targetDay)) {
-                    //反転だと視認しにくいので枠で囲む
+                    //���]���Ǝ��F���ɂ����̂Řg�ň͂�
                     display_drawRect(xx-1, yy-1, xpitch + 1, ypitch, WHITE);
                 }
             }
@@ -1128,14 +1128,14 @@ void basicDrawCalendar(uint8_t year, uint8_t month, int16_t xs, int16_t ys, Obje
 
 
 /*
- * Formatに応じてカレンダーを表示する
- * 現在5種類のフォーマット
- * Month1: 今月1か月のカレンダーを表示。フォントサイズ変えることで、大きくも小さくも表示可
- * Month3: 前後の月を含めて3か月分のカレンダーを横配置で表示
- * Month3v:前後の月を含めて3か月分のカレンダーを縦配置で表示
- * 　引数の年月は、表示させる月を指す
- * 　BCDではない
- * 表示位置は、リソースで指定
+ * Format�ɉ����ăJ�����_�[��\������
+ * ����5��ނ̃t�H�[�}�b�g
+ * Month1: ����1�����̃J�����_�[��\���B�t�H���g�T�C�Y�ς��邱�ƂŁA�傫�������������\����
+ * Month3: �O��̌����܂߂�3�������̃J�����_�[�����z�u�ŕ\��
+ * Month3v:�O��̌����܂߂�3�������̃J�����_�[���c�z�u�ŕ\��
+ * �@�����̔N���́A�\�������錎���w��
+ * �@BCD�ł͂Ȃ�
+ * �\���ʒu�́A���\�[�X�Ŏw��
  * 
  */
 void DrawCalendar(ObjectRsc *rsc) {
@@ -1147,29 +1147,29 @@ void DrawCalendar(ObjectRsc *rsc) {
     if (rsc->disp) {
         f = rsc->format % 10;
         if (f == Month1) {
-            // 1か月のカレンダーを表示　　大きさはフォントサイズで指定
+            // 1�����̃J�����_�[��\���@�@�傫���̓t�H���g�T�C�Y�Ŏw��
             xx = 1;
             yy = 1;
         } else if (f == Month2) {
-            // 2か月分のカレンダーを表示
+            // 2�������̃J�����_�[��\��
             xx = 2;
             yy = 1;
         } else if (f == Month2v) {
-            // 2か月分のカレンダーを縦に表示
+            // 2�������̃J�����_�[���c�ɕ\��
             xx = 1;
             yy = 2;
         } else if (f == Month3) {
-            // 3か月分のカレンダーを表示
+            // 3�������̃J�����_�[��\��
             xx = 3;
             yy = 1;
         } else if (f == Month3v) {
-            // 3か月分のカレンダーを縦に表示
+            // 3�������̃J�����_�[���c�ɕ\��
             xx = 1;
             yy = 3;
         }
 
-        //CalendarXsize、CalendarYsizeは、最初の月を描画すると計算される
-        if (xx * yy > 2) monthAdj = -1; //3か月表示の時は、前月から表示する
+        //CalendarXsize�ACalendarYsize�́A�ŏ��̌���`�悷��ƌv�Z�����
+        if (xx * yy > 2) monthAdj = -1; //3�����\���̎��́A�O������\������
         else monthAdj = 0;
         
         yp = rsc->y;
@@ -1188,41 +1188,41 @@ void DrawCalendar(ObjectRsc *rsc) {
 }
 
 /*
- * アラーム時刻を表示　　スイッチの状態で色を変化させる
+ * �A���[��������\���@�@�X�C�b�`�̏�ԂŐF��ω�������
  * sw SlideSWoff=Alarm off, SlideSWon=Alarm on
  */
 void DrawAlarmTime(uint8_t *alarmtime, uint8_t sw, ObjectRsc *rsc) {
     char str[100];
     char ampm[][3] = {"AM", "PM", ""};
     uint8_t ap;
-    char onOff; //[] = {'-', '+'};    //オンオフで+-切替　plus/minus
+    char onOff; //[] = {'-', '+'};    //�I���I�t��+-�ؑց@plus/minus
     uint16_t color;
     uint8_t hr;
     
     if (rsc->disp) {
-        //アラーム時刻の表示色を、スライドSWのOn/Offで変える
+        //�A���[�������̕\���F���A�X���C�hSW��On/Off�ŕς���
         if (sw == SlideSWon) {
-            //Onの時
+            //On�̎�
             onOff = '+';
             color = rsc->color;
         } else {
-            //Offの時
+            //Off�̎�
             onOff = '-';
-            color = rsc->attribute;  //アラームのオフ時の色はattributeに格納
+            color = rsc->attribute;  //�A���[���̃I�t���̐F��attribute�Ɋi�[
         }
         
         hr = Bcd2Hex(alarmtime[1]);
         if ((rsc->format == ALMAMPM)||(rsc->format == iALAMPM)) {
-            //12時間表示
+            //12���ԕ\��
             if (hr >= 12) {
-                ap= 1;   //12時以降なら午後  
-                hr -= 12;   //12時間表記のため、12差し引く
+                ap= 1;   //12���ȍ~�Ȃ�ߌ�  
+                hr -= 12;   //12���ԕ\�L�̂��߁A12��������
             }
             else {
                 ap = 0;
             }
         } else {
-            //24時間表示
+            //24���ԕ\��
             ap = 2;
         }
         if ((rsc->format == ALMAMPM)||(rsc->format == ALM24)) {
@@ -1231,9 +1231,9 @@ void DrawAlarmTime(uint8_t *alarmtime, uint8_t sw, ObjectRsc *rsc) {
             sprintf(str, "%c%c %s%02d:%02x", Fbell, onOff, ampm[ap], hr, alarmtime[0]);
         }
         presetting(rsc);
-        display_setColor(color);    //SWに対応して色を変更させるため
+        display_setColor(color);    //SW�ɑΉ����ĐF��ύX�����邽��
         display_puts(str);
-        display_setTextPitchAdj(0, 0); //presettingとペアで元に戻す
+        display_setTextPitchAdj(0, 0); //presetting�ƃy�A�Ō��ɖ߂�
         
         rsc->xw = Cursor_x - rsc->x;
         rsc->yw = CurrentFont.ysize * CurrentFont.MagY;
@@ -1241,9 +1241,9 @@ void DrawAlarmTime(uint8_t *alarmtime, uint8_t sw, ObjectRsc *rsc) {
 }
 
 /*
- * 今日の日付を表示
- * 表示方法などは、リソース内で、指定する
- * 　　format, フォントなど
+ * �����̓��t��\��
+ * �\�����@�Ȃǂ́A���\�[�X���ŁA�w�肷��
+ * �@�@format, �t�H���g�Ȃ�
  */
 void DrawDate(uint8_t *datetime, ObjectRsc *rsc) {
     char str[100];
@@ -1251,10 +1251,10 @@ void DrawDate(uint8_t *datetime, ObjectRsc *rsc) {
     if (rsc->disp) {
         switch (rsc->format) {
             case YYYYMMDDw:
-                //NormalFontでは、曜日のフォントがFSunday=0x17-にある
+                //NormalFont�ł́A�j���̃t�H���g��FSunday=0x17-�ɂ���
                 sprintf(str, "20%02x/%02x/%02x(%c)", datetime[6], datetime[5], datetime[4], FSunday+datetime[3]);
                 break;
-            case YYYYMMDDwe:  //曜日の英語表記
+            case YYYYMMDDwe:  //�j���̉p��\�L
                 sprintf(str, "20%02x/%02x/%02x(%s)", datetime[6], datetime[5], datetime[4], WeekDays[datetime[3]]);
                 break;
             case YYYYMMDD:
@@ -1281,7 +1281,7 @@ void DrawDate(uint8_t *datetime, ObjectRsc *rsc) {
         };
         presetting(rsc);
         display_puts(str);
-        display_setTextPitchAdj(0, 0); //presettingとペアで元に戻す
+        display_setTextPitchAdj(0, 0); //presetting�ƃy�A�Ō��ɖ߂�
         
         rsc->xw = Cursor_x - rsc->x;
         rsc->yw = CurrentFont.ysize * CurrentFont.MagY;
@@ -1290,8 +1290,8 @@ void DrawDate(uint8_t *datetime, ObjectRsc *rsc) {
 
 
 /*
- * 温度を表示
- * temp:　摂氏を10倍にして、0.1℃まで整数で対応させる
+ * ���x��\��
+ * temp:�@�ێ���10�{�ɂ��āA0.1���܂Ő����őΉ�������
  */
 void DrawTemperature(int16_t temp, ObjectRsc *rsc) {
     char str[50];
@@ -1299,16 +1299,16 @@ void DrawTemperature(int16_t temp, ObjectRsc *rsc) {
     
     if (rsc->disp) {
         if (rsc->format == DEGF) {
-            //tempは、10倍の摂氏　　　10F = 9/5*(10C) + 320
+            //temp�́A10�{�̐ێ��@�@�@10F = 9/5*(10C) + 320
             ftemp = temp * 9*2 +320 *10;
             sprintf(str, "%2d%c", ftemp / 100, FdegF);  //
         } else {
-            sprintf(str, "%2d.%1d%c", temp / 10, temp % 10, FdegC);  //FdegC=℃の文字コード
+            sprintf(str, "%2d.%1d%c", temp / 10, temp % 10, FdegC);  //FdegC=���̕����R�[�h
         }
         
         presetting(rsc);
         display_puts(str);
-        display_setTextPitchAdj(0, 0); //presettingとペアで元に戻す
+        display_setTextPitchAdj(0, 0); //presetting�ƃy�A�Ō��ɖ߂�
         
         rsc->xw = Cursor_x - rsc->x;
         rsc->yw = CurrentFont.ysize * CurrentFont.MagY;
@@ -1316,8 +1316,8 @@ void DrawTemperature(int16_t temp, ObjectRsc *rsc) {
 }
 
 /*
- * 湿度を表示
- * 小数点以下は表示しない
+ * ���x��\��
+ * �����_�ȉ��͕\�����Ȃ�
  */
 void DrawHumidity(int16_t humidity, ObjectRsc *rsc) {
     char str[50];
@@ -1334,8 +1334,8 @@ void DrawHumidity(int16_t humidity, ObjectRsc *rsc) {
 }
 
 /*
- * 歯車アイコン32x32ドットを(x,y)座標に描画
- * カスタムフォントにも対応できるよう
+ * ���ԃA�C�R��32x32�h�b�g��(x,y)���W�ɕ`��
+ * �J�X�^���t�H���g�ɂ��Ή��ł���悤
  */
 void DrawGearIcon(ObjectRsc *rsc) {
     char str[50];
