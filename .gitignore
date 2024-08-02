@@ -1,3 +1,8 @@
-/nbproject/
 /dist/
 /build/
+/nbproject/private/
+/nbproject/Makefile-local-default.mk
+/nbproject/Makefile-impl.mk
+/nbproject/Makefile-genesis.properties
+/nbproject/Makefile-default.mk
+/nbproject/Makefile-variables.mk
